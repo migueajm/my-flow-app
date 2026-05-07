@@ -6,11 +6,11 @@ enum MovementType {
   String get label {
     switch (this) {
       case MovementType.deposito:
-        return 'Deposito';
+        return 'deposit';
       case MovementType.retiro:
-        return 'Retiro';
+        return 'withdrawal';
       case MovementType.rendimiento:
-        return 'Rendimiento';
+        return 'performance';
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/finance_provider.dart';
 import '../utils/category_icons.dart';
 import '../utils/formatters.dart';
@@ -15,6 +16,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FinanceProvider>();
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -23,9 +25,9 @@ class DashboardScreen extends StatelessWidget {
         if (provider.income == null)
           Card(
             color: Theme.of(context).colorScheme.primaryContainer,
-            child: const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Captura tu salario mensual para activar el presupuesto 80/20.'),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(l10n.t('salaryPrompt')),
             ),
           ),
         if (provider.isNearExpenseLimit)
@@ -37,8 +39,8 @@ class DashboardScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 provider.isOverExpenseLimit
-                    ? 'Has excedido el presupuesto de gastos del mes.'
-                    : 'Estas cerca de exceder el presupuesto de gastos.',
+                    ? l10n.t('overLimit')
+                    : l10n.t('nearLimit'),
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
@@ -50,35 +52,40 @@ class DashboardScreen extends StatelessWidget {
           childAspectRatio: 1.18,
           children: [
             SummaryCard(
-              title: 'Ingreso',
+              title: l10n.t('incomeLabel'),
               amount: provider.salary,
               icon: Icons.payments,
               color: Colors.teal,
             ),
             SummaryCard(
-              title: '80% gastos',
+              title: l10n.t('expenseBudget'),
               amount: provider.expenseBudget,
               icon: Icons.account_balance_wallet,
               color: Colors.indigo,
-              subtitle: 'Queda ${currencyFormat.format(provider.expenseRemaining)}',
+              subtitle:
+                  '${l10n.t('remaining')} ${currencyFormat.format(provider.expenseRemaining)}',
             ),
             SummaryCard(
-              title: 'Gastado',
+              title: l10n.t('spent'),
               amount: provider.expenseTotal,
               icon: Icons.shopping_cart,
               color: Colors.deepOrange,
             ),
             SummaryCard(
-              title: '20% ahorro',
+              title: l10n.t('savingsBudget'),
               amount: provider.savingsBudget,
               icon: Icons.trending_up,
               color: Colors.green,
-              subtitle: 'Disponible ${currencyFormat.format(provider.savingsRemaining)}',
+              subtitle:
+                  '${l10n.t('available')} ${currencyFormat.format(provider.savingsRemaining)}',
             ),
           ],
         ),
         const SizedBox(height: 16),
-        Text('Uso del presupuesto', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.t('budgetUsage'),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         LinearProgressIndicator(
           value: provider.expenseUsagePercent,
@@ -86,28 +93,42 @@ class DashboardScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         const SizedBox(height: 20),
-        Text('Distribucion de gastos', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.t('expenseDistribution'),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 12),
         ExpensePieChart(data: provider.categoryTotals),
         const SizedBox(height: 20),
-        Text('Ultimos gastos', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.t('latestExpenses'),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         if (provider.expenses.isEmpty)
-          const EmptyState(
+          EmptyState(
             icon: Icons.receipt_long,
-            title: 'Aun no hay gastos',
-            message: 'Los gastos del mes apareceran aqui.',
+            title: l10n.t('noExpensesTitle'),
+            message: l10n.t('noExpensesMessage'),
           )
         else
           ...provider.expenses.take(5).map((expense) {
             final category = provider.categoryById(expense.categoryId);
             return ListTile(
               leading: CircleAvatar(
-                backgroundColor: Color(category?.color ?? 0xFF6C757D).withOpacity(.15),
+                backgroundColor: Color(
+                  category?.color ?? 0xFF6C757D,
+                ).withValues(alpha: .15),
                 child: Icon(categoryIcon(category?.icon ?? 'more')),
               ),
-              title: Text(expense.description.isEmpty ? category?.name ?? 'Gasto' : expense.description),
-              subtitle: Text('${category?.name ?? 'Categoria'} · ${shortDateFormat.format(expense.date)}'),
+              title: Text(
+                expense.description.isEmpty
+                    ? category?.name ?? l10n.t('expenses')
+                    : expense.description,
+              ),
+              subtitle: Text(
+                '${category?.name ?? l10n.t('category')} · ${shortDateFormat.format(expense.date)}',
+              ),
               trailing: Text(currencyFormat.format(expense.amount)),
             );
           }),

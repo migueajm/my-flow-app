@@ -2,7 +2,7 @@ enum AccountType {
   ahorro,
   inversion;
 
-  String get label => this == AccountType.ahorro ? 'Ahorro' : 'Inversion';
+  String get label => this == AccountType.ahorro ? 'savings' : 'investments';
 }
 
 class SavingsAccount {

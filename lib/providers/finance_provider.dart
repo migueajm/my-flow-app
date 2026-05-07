@@ -38,8 +38,10 @@ class FinanceProvider extends ChangeNotifier {
     return (expenseTotal / expenseBudget).clamp(0, 1);
   }
 
-  bool get isNearExpenseLimit => expenseBudget > 0 && expenseUsagePercent >= 0.85;
-  bool get isOverExpenseLimit => expenseBudget > 0 && expenseTotal > expenseBudget;
+  bool get isNearExpenseLimit =>
+      expenseBudget > 0 && expenseUsagePercent >= 0.85;
+  bool get isOverExpenseLimit =>
+      expenseBudget > 0 && expenseTotal > expenseBudget;
 
   Future<void> initialize() async {
     isLoading = true;
@@ -101,6 +103,35 @@ class FinanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateExpense({
+    required int id,
+    required DateTime date,
+    required int categoryId,
+    required double amount,
+    required String description,
+  }) async {
+    await _db.updateExpense(
+      Expense(
+        id: id,
+        date: date,
+        categoryId: categoryId,
+        amount: amount,
+        description: description,
+        month: date.month,
+        year: date.year,
+      ),
+    );
+    selectedMonth = MonthKey.fromDate(date);
+    await refreshMonth();
+    notifyListeners();
+  }
+
+  Future<void> deleteExpense(int id) async {
+    await _db.deleteExpense(id);
+    await refreshMonth();
+    notifyListeners();
+  }
+
   Future<void> addAccount({
     required String name,
     required AccountType type,
@@ -131,6 +162,37 @@ class FinanceProvider extends ChangeNotifier {
       ),
     );
     selectedMonth = MonthKey.fromDate(date);
+    await refreshMonth();
+    notifyListeners();
+  }
+
+  Future<void> updateMovement({
+    required int id,
+    required int accountId,
+    required MovementType type,
+    required double amount,
+    required DateTime date,
+    required String description,
+  }) async {
+    await _db.updateMovement(
+      Movement(
+        id: id,
+        accountId: accountId,
+        type: type,
+        amount: amount,
+        date: date,
+        description: description,
+        month: date.month,
+        year: date.year,
+      ),
+    );
+    selectedMonth = MonthKey.fromDate(date);
+    await refreshMonth();
+    notifyListeners();
+  }
+
+  Future<void> deleteMovement(int id) async {
+    await _db.deleteMovement(id);
     await refreshMonth();
     notifyListeners();
   }

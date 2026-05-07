@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/finance_provider.dart';
 import '../utils/formatters.dart';
 import '../widgets/month_selector.dart';
@@ -26,6 +27,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FinanceProvider>();
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -39,21 +41,30 @@ class _IncomeScreenState extends State<IncomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Salario mensual', style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    l10n.t('monthlySalary'),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _salaryController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: InputDecoration(
-                      labelText: 'Monto',
+                      labelText: l10n.t('amount'),
                       prefixText: r'$ ',
                       helperText: provider.income == null
-                          ? 'Se guardara para ${provider.selectedMonth.label}.'
-                          : 'Actual: ${currencyFormat.format(provider.salary)}',
+                          ? '${l10n.t('willSaveFor')} ${provider.selectedMonth.label}.'
+                          : '${l10n.t('current')}: ${currencyFormat.format(provider.salary)}',
                     ),
                     validator: (value) {
-                      final amount = double.tryParse(value?.replaceAll(',', '') ?? '');
-                      if (amount == null || amount <= 0) return 'Ingresa un monto valido';
+                      final amount = double.tryParse(
+                        value?.replaceAll(',', '') ?? '',
+                      );
+                      if (amount == null || amount <= 0) {
+                        return l10n.t('validAmount');
+                      }
                       return null;
                     },
                   ),
@@ -61,17 +72,19 @@ class _IncomeScreenState extends State<IncomeScreen> {
                   FilledButton.icon(
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
-                      final amount = double.parse(_salaryController.text.replaceAll(',', ''));
+                      final amount = double.parse(
+                        _salaryController.text.replaceAll(',', ''),
+                      );
                       await context.read<FinanceProvider>().saveIncome(amount);
                       _salaryController.clear();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Ingreso guardado')),
+                          SnackBar(content: Text(l10n.t('incomeSaved'))),
                         );
                       }
                     },
                     icon: const Icon(Icons.save),
-                    label: const Text('Guardar ingreso'),
+                    label: Text(l10n.t('saveIncome')),
                   ),
                 ],
               ),
@@ -86,19 +99,19 @@ class _IncomeScreenState extends State<IncomeScreen> {
           childAspectRatio: 2.4,
           children: [
             SummaryCard(
-              title: 'Salario',
+              title: l10n.t('salary'),
               amount: provider.salary,
               icon: Icons.payments,
               color: Colors.teal,
             ),
             SummaryCard(
-              title: 'Gastos 80%',
+              title: l10n.t('expenseBudget'),
               amount: provider.expenseBudget,
               icon: Icons.account_balance_wallet,
               color: Colors.indigo,
             ),
             SummaryCard(
-              title: 'Ahorro/Inversion 20%',
+              title: l10n.t('savingsBudget'),
               amount: provider.savingsBudget,
               icon: Icons.savings,
               color: Colors.green,

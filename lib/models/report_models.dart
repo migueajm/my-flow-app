@@ -13,10 +13,7 @@ class CategoryTotal {
 }
 
 class PeriodTotal {
-  const PeriodTotal({
-    required this.label,
-    required this.total,
-  });
+  const PeriodTotal({required this.label, required this.total});
 
   final String label;
   final double total;

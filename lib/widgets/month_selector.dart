@@ -13,16 +13,17 @@ class MonthSelector extends StatelessWidget {
       children: [
         IconButton(
           tooltip: 'Mes anterior',
-          onPressed: () => provider.changeMonth(provider.selectedMonth.previous()),
+          onPressed: () =>
+              provider.changeMonth(provider.selectedMonth.previous()),
           icon: const Icon(Icons.chevron_left),
         ),
         Expanded(
           child: Text(
             provider.selectedMonth.label,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         IconButton(

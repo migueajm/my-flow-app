@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:gastos_personales/l10n/app_localizations.dart';
 
 import '../models/report_models.dart';
 import '../utils/formatters.dart';
@@ -12,11 +13,12 @@ class ExpensePieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (data.isEmpty) {
-      return const EmptyState(
+      return EmptyState(
         icon: Icons.pie_chart_outline,
-        title: 'Sin gastos',
-        message: 'Registra gastos para ver la distribucion por categoria.',
+        title: l10n.t('no_expenses'),
+        message: l10n.t('register_expenses'),
       );
     }
 
@@ -47,7 +49,7 @@ class ExpensePieChart extends StatelessWidget {
           ),
         ),
         Wrap(
-          spacing: 18,
+          spacing: 12,
           runSpacing: 8,
           children: data
               .map(
@@ -74,15 +76,17 @@ class PeriodBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (data.isEmpty) {
-      return const EmptyState(
+      return EmptyState(
         icon: Icons.bar_chart,
-        title: 'Sin datos',
-        message: 'Este periodo todavia no tiene movimientos.',
+        title: l10n.t('empty-data'),
+        message: l10n.t('empty-data-message'),
       );
     }
 
-    final maxY = data.map((e) => e.total).reduce((a, b) => a > b ? a : b) * 1.25;
+    final maxY =
+        data.map((e) => e.total).reduce((a, b) => a > b ? a : b) * 1.25;
     return SizedBox(
       height: 240,
       child: BarChart(
@@ -91,18 +95,27 @@ class PeriodBarChart extends StatelessWidget {
           gridData: const FlGridData(show: true),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 36,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
-                  if (index < 0 || index >= data.length) return const SizedBox.shrink();
+                  if (index < 0 || index >= data.length) {
+                    return const SizedBox.shrink();
+                  }
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Text(data[index].label, style: const TextStyle(fontSize: 10)),
+                    child: Text(
+                      data[index].label,
+                      style: const TextStyle(fontSize: 10),
+                    ),
                   );
                 },
               ),
@@ -135,11 +148,12 @@ class MonthlyLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (data.isEmpty) {
-      return const EmptyState(
+      return EmptyState(
         icon: Icons.show_chart,
-        title: 'Sin historico',
-        message: 'Captura ingresos en varios meses para comparar.',
+        title: l10n.t('no-history'),
+        message: l10n.t('history-message'),
       );
     }
 
@@ -153,18 +167,27 @@ class MonthlyLineChart extends StatelessWidget {
           gridData: const FlGridData(show: true),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 36,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
-                  if (index < 0 || index >= data.length) return const SizedBox.shrink();
+                  if (index < 0 || index >= data.length) {
+                    return const SizedBox.shrink();
+                  }
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Text(data[index].label, style: const TextStyle(fontSize: 10)),
+                    child: Text(
+                      data[index].label,
+                      style: const TextStyle(fontSize: 10),
+                    ),
                   );
                 },
               ),
@@ -173,7 +196,8 @@ class MonthlyLineChart extends StatelessWidget {
           lineBarsData: [
             LineChartBarData(
               spots: [
-                for (var i = 0; i < data.length; i++) FlSpot(i.toDouble(), data[i].expenses),
+                for (var i = 0; i < data.length; i++)
+                  FlSpot(i.toDouble(), data[i].expenses),
               ],
               isCurved: true,
               color: Theme.of(context).colorScheme.error,
@@ -181,7 +205,8 @@ class MonthlyLineChart extends StatelessWidget {
             ),
             LineChartBarData(
               spots: [
-                for (var i = 0; i < data.length; i++) FlSpot(i.toDouble(), data[i].savings),
+                for (var i = 0; i < data.length; i++)
+                  FlSpot(i.toDouble(), data[i].savings),
               ],
               isCurved: true,
               color: Theme.of(context).colorScheme.primary,

@@ -1,4 +1,4 @@
-package com.example.my_flow
+package com.example.gastos_personales
 
 import io.flutter.embedding.android.FlutterActivity
 

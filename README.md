@@ -39,3 +39,7 @@ flutter run
 - Gestion de cuentas de ahorro/inversion y movimientos.
 - Reportes diario, semanal, mensual, comparacion entre meses.
 - Graficos de pastel, barras y lineas con `fl_chart`.
+- Tema claro, oscuro o sistema.
+- Idioma Espanol/Ingles segun el dispositivo, con selector manual.
+- Pantalla de inicio de sesion maquetada y acceso como invitado.
+- Swipe para editar o eliminar gastos y movimientos de ahorro/inversion.
