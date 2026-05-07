@@ -13,7 +13,7 @@ Se usa MVVM ligero:
 - `widgets/`: componentes reutilizables.
 
 El manejo de estado usa `Provider` porque es simple, estable y suficiente para una app local con formularios, reportes y datos derivados del mes seleccionado.
-
+<img src="https://raw.githubusercontent.com/migueajm/my-flow-app/refs/heads/main/assets/marketing2.png">
 ## Ejecutar
 
 ```bash
